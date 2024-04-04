@@ -6,7 +6,11 @@ from django.conf import settings
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE","demo_celery.settings")
 
+
 celery_app = Celery("demo_celery")
+celery_app.config_from_object(settings, namespace="CELERY")
+
+# CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'
 
 celery_app.conf.update(
     {
@@ -24,16 +28,17 @@ celery_app.conf.update(
 )
 
 celery_app.conf.task_routes = {
-    "main.tasks.demo_celery_function":{"queue":"testq"}
+    "main.tasks.demo_celery_function":{"queue":"testq"},
+    "main.tasks.crontab_ping_test":{"queue":"myqueue"}
 }
 
-celery_app.config_from_object(settings, namespace="demo celery task")
+
 
 
 celery_app.conf.beat_schedule = {
     "task-ping-every-2-min": {
         "task": "main.tasks.crontab_ping_test",
-        "schedule": crontab(minute="*/2"),
+        "schedule": 60,
         "args": (),
     },
 }

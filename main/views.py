@@ -7,7 +7,7 @@ from main.tasks import demo_celery_function
 
 def celery_test(request):
     try:
-        demo_celery_function.delay()
+        demo_celery_function.apply_async(qyeye="testq")
         return HttpResponse("Here is the celery task!")
     except Exception as e:
         return HttpResponse(str(e))

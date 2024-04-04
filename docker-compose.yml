@@ -34,9 +34,9 @@ services:
   celery:
     image: vikas_demo
     container_name: demo_celery_service
-    command: celery -A demo_celery worker -Q testq -c 4 --loglevel=info --beat
+    command: celery -A demo_celery worker -Q testq,myqueue -c 4 --loglevel=info --beat
     volumes:
-      - .:/celery_demo
+      - .:/democelery
     depends_on:
       - database
       - rabbitmqserver
@@ -46,7 +46,7 @@ services:
     container_name: demo_celery_django
     command: python manage.py runserver 0.0.0.0:8080
     volumes:
-      - .:/celerytest
+      - .:/democelery
     ports:
       - "5678:8080"
     depends_on:
